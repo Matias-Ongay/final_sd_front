@@ -31,50 +31,52 @@ export default function EndpointsTester() {
 
   const role = getCurrentRole();
 
- const probar = async (endpoint: EndpointConfig) => {
-  if (endpoint.path === "/api/users/create-user") {
-    navigate("/create-user");
-    return;
-  }
-
-  try {
-    let headers = {};
-    if (role !== "public") {
-      const token = await getAccessTokenSilently();
-      headers = {
-        Authorization: `Bearer ${token}`,
-      };
+  const probar = async (endpoint: EndpointConfig) => {
+    if (endpoint.path === "/api/users/create-user") {
+      navigate("/create-user");
+      return;
+    } else if (endpoint.path === "/api/users/get-all-users") {
+      navigate("/admin");
+      return;
     }
 
-    const res = await api.request({
-      method: endpoint.label.startsWith("POST") ? "post" : "get",
-      url: endpoint.path,
-      headers,
-    });
+    try {
+      let headers = {};
+      if (role !== "public") {
+        const token = await getAccessTokenSilently();
+        headers = {
+          Authorization: `Bearer ${token}`,
+        };
+      }
 
-    setResult((prev) => ({
-      ...prev,
-      [endpoint.path]: `✅ ${res.status} ${res.statusText || "OK"} - ${JSON.stringify(res.data)}`,
-    }));
-  } catch (err: any) {
-    const message = err?.response?.status
-      ? ` ${err.response.status} - ${err.response.statusText}`
-      : " Error al conectar";
-    setResult((prev) => ({
-      ...prev,
-      [endpoint.path]: message,
-    }));
-  }
-};
+      const res = await api.request({
+        method: endpoint.label.startsWith("POST") ? "post" : "get",
+        url: endpoint.path,
+        headers,
+      });
 
-
+      setResult((prev) => ({
+        ...prev,
+        [endpoint.path]: `✅ ${res.status} ${res.statusText || "OK"} - ${JSON.stringify(res.data)}`,
+      }));
+    } catch (err: any) {
+      const message = err?.response?.status
+        ? ` ${err.response.status} - ${err.response.statusText}`
+        : " Error al conectar";
+      setResult((prev) => ({
+        ...prev,
+        [endpoint.path]: message,
+      }));
+    }
+  };
 
   return (
     <div className="min-h-screen px-6 py-10 bg-gray-950 text-white flex flex-col items-center">
       <div className="max-w-3xl w-full">
         <h1 className="text-4xl font-bold mb-4 text-center">🔧 Probar Endpoints</h1>
         <p className="text-md text-center text-gray-400 mb-8">
-          Estás actuando como: <span className="capitalize font-semibold text-white">{role}</span>. A continuación se muestran los endpoints disponibles para tu rol actual.
+          Estás actuando como:{" "}
+          <span className="capitalize font-semibold text-white">{role}</span>. A continuación se muestran los endpoints disponibles para tu rol actual.
         </p>
 
         <ul className="space-y-6">
@@ -93,7 +95,7 @@ export default function EndpointsTester() {
                 </div>
                 {result[ep.path] && (
                   <div
-                    className={`mt-2 p-3 rounded text-sm ${
+                    className={`mt-2 p-3 rounded text-sm break-all ${
                       result[ep.path].startsWith("✅")
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
