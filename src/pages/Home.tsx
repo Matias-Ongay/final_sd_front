@@ -39,8 +39,11 @@ export default function Home() {
         </button>
         {publicResult && (
             <p className="mt-2 text-sm text-gray-200">{publicResult}</p>
+            
         )}
+        
         </div>
+        
 
         {isLoading ? (
           <p className="text-lg">Cargando sesión...</p>
@@ -48,8 +51,6 @@ export default function Home() {
           <>
             <div className="bg-gray-800 rounded-xl shadow-lg p-6 text-left">
               <p className="text-xl font-semibold mb-2">👋 Hola, {user?.name}</p>
-              <p className="text-sm text-gray-300 mb-4">Email: {user?.email}</p>
-
               <p className="text-sm">
                 <span className="font-medium">Rol:</span>{" "}
                 <span className="capitalize">
@@ -62,9 +63,6 @@ export default function Home() {
               <Link className="text-blue-400 hover:underline" to="/public">
                 🌐 Ver página pública
               </Link>
-              <Link className="text-blue-400 hover:underline" to="/private">
-                🔐 Ver página privada (user/admin)
-              </Link>
               <Link className="text-blue-400 hover:underline" to="/probar-endpoints">
                 ⚙️ Probar todos los endpoints
               </Link>
@@ -73,13 +71,10 @@ export default function Home() {
                   <Link className="text-blue-400 hover:underline" to="/admin">
                     🛠 Dashboard admin
                   </Link>
-                  <Link className="text-blue-400 hover:underline" to="/users">
-                    👥 Ver usuarios
-                  </Link>
                 </>
               )}
             </div>
-
+              
             <button
               onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
               className="mt-8 px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded"
@@ -88,12 +83,17 @@ export default function Home() {
             </button>
           </>
         ) : (
+            <div className="flex flex-col items-center gap-4">
+            <Link className="text-blue-400 hover:underline" to="/public">
+                🌐 Ver página pública
+            </Link>
           <button
             onClick={() => loginWithRedirect()}
             className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded"
           >
             Iniciar sesión
           </button>
+          </div>
         )}
       </div>
     </div>
